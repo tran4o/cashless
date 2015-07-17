@@ -63,9 +63,6 @@ app.get("/isqr",function(req,resp) {
 app.get("/readqr",function(req,resp) {
 	var cstr = req.query.user;
 	var qrcode = req.query.code;
-
-	console.log("ACCEPT : "+cstr+" | "+qrcode);
-
 	resp.header("Content-Type", "application/json; charset=utf-8");
 	db.select().from('User').where({code: cstr}).all().then(function (users) 
 	{
@@ -278,17 +275,14 @@ app.post("/pay",function(req,resp) {
 
 app.post("/login",function(req,resp) {
 	resp.header("Content-Type", "application/json; charset=utf-8");
-	console.log(req.body);
 	var code = req.body.login;
 	var pass = req.body.password;
-	console.log("CODE : "+code);
 	db.select().from('User').where({code: code,password:pass}).all().then(function (users) 
 	{
 		if (!users || users.length != 1)
 		{
 			resp.send("{}");
 		} else {
-			//console.log("OK!!!"+users[0]["@rid"]);
 			resp.send(JSON.stringify({'id':users[0]["@rid"]}, null, 4));
 		}
 	});	
