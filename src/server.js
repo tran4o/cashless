@@ -1,4 +1,3 @@
-var Barc = require('barcode-generator')
 var db = require('./db').db;
 var express = require('express');
 var compress = require('compression');
@@ -7,7 +6,9 @@ var bodyParser = require('body-parser');
 var inventory = require('./inventory');
 
 //var qrcode = require('qrcode');
+//var Barc = require('barcode-generator')
 var qrcode=null;
+var Barc=null;
 
 var barc = new Barc();
 var app = express();
