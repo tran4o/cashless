@@ -5,7 +5,9 @@ var compress = require('compression');
 var extend = require('util')._extend;
 var bodyParser = require('body-parser');
 var inventory = require('./inventory');
-var qrcode = require('qrcode');
+
+//var qrcode = require('qrcode');
+var qrcode=null;
 
 var barc = new Barc();
 var app = express();

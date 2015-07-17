@@ -31,7 +31,6 @@
 	"binary-search-tree" : "^0.2.4",
 	"request" : "^2.58.0",
 	"orientjs" : "^2.0.0",
-	"qrcode" : "^0.2.12",
 	"barcode-generator" : "^0.1.0"  
   },
   "devDependencies": {
