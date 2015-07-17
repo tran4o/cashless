@@ -1,0 +1,43 @@
+[
+	{
+		"code" : "BEER",
+		"price" : 2.50,
+		"background" : "green",
+		"color" : "black"
+	}, 	
+	{
+		"code" : "WATER",
+		"price" : 1.50,
+		"background" : "blue",
+		"color" : "white"
+	}, 	
+	{
+		"code" : "SOFT",
+		"price" : 2,
+		"background" : "#80A0C0"
+	}, 	
+	{
+		"code" : "HRD50",
+		"price" : 4
+	}, 	
+	{
+		"code" : "HRD100",
+		"price" : 8
+	}, 	
+	{
+		"code" : "CKTL1",
+		"price" : 10
+	}, 	
+	{
+		"code" : "CKTL2",
+		"price" : 8
+	}, 	
+	{
+		"code" : "MIX1",
+		"price" : 6
+	}, 	
+	{
+		"code" : "MIX2",
+		"price" : 7
+	} 	
+]

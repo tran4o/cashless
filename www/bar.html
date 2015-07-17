@@ -1,0 +1,685 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no, width=device-width">
+	<script src="js/jquery-2.1.3.min.js"></script>
+	<script src="js/jquery.blockUI.js"></script>
+	<style>
+
+		.charge-panel .amount {
+			display : inline-block;
+			margin-top : 10px;
+		}
+
+		#header {
+			font-size : 200%;
+			font-weight : bold;
+			cursor : pointer;
+			display : inline-block;
+		}
+
+		#header:hover {
+			text-decoration : underline;
+			color : red;
+		}
+
+		.hidden {
+			display : none;
+		}	
+		#login-form {
+			position : absolute;
+			background-color : rgba(0,0,0,0.85);
+			top:0;
+			bottom:0;
+			left:0;
+			right:0;
+			padding : 1em;
+			font-size : 50px;
+		}
+		
+		#login-form input {
+			padding : 1em;
+			font-size : 50px;
+			background-color : rgba(255,255,255,0.1);
+			text-color : white;
+			border : 2px solid white;
+			display : block;
+			margin-bottom : 1em;
+			color : white;
+			text-align : center; 
+			max-width : 80%;
+		}
+    
+    
+    	body {
+			font-family: Arial, "Lucida Grande", Tahoma, Verdana, sans-serif;
+    		font-size: 15px;
+			position : absolute;
+			top : 0;
+			right : 0;
+			left : 0;
+			bottom : 0;
+			overflow : auto;
+			padding : 10px;
+			margin : 0;
+			background-color : white;
+
+			-webkit-touch-callout: none;
+			-webkit-user-select: none;
+			-khtml-user-select: none;
+			-moz-user-select: none;
+			-ms-user-select: none;
+			user-select: none;
+		}
+		
+		
+		#items {
+			/* border : 1px solid black; */
+			padding : 10px;
+			margin-right : 200px;
+			/* background-color : #f0f0f0; */
+		}
+		
+		#items .total {
+			font-weight : bold;
+			font-size : 30px;
+			position : absolute;
+			right : 10px;
+			top : 10px; 			
+		}
+
+		#items .submit {
+			position : absolute;
+			right : 10px;
+			top : 50px;
+			border : 2px solid red;
+			font-size : 50px;
+			padding : 20px;
+			cursor : pointer;
+		}
+
+		#items .clear {
+			position : absolute;
+			right : 10px;
+			top : 170px;
+			border : 2px solid gray;
+			font-size : 500%;
+			padding : 20px;
+			cursor : pointer;
+		}
+
+		#items .charge {
+			position : absolute;
+			right : 10px;
+			bottom : 10px;
+			border : 2px solid gray;
+			font-size : 300%;
+			padding : 20px;
+			cursor : pointer;
+		}
+		
+		
+		#items .submit:hover {
+			color : white;
+			background-color : red;		
+		} 
+
+		#items .clear:hover {
+			color : white;
+			background-color : gray;		
+		} 
+		
+		.item {
+			display : inline-block;
+			padding : 12px;
+			margin : 5px;
+			border : 1px solid #b0b0b0;
+			text-align : center;
+			cursor : pointer;
+			opacity : 0.35;
+		}
+		
+		.item:hover {
+			border : 3px solid black;
+			padding : 10px;
+			opacity : 1;
+		}
+		
+		.item .code {
+			font-size : 200%;
+			font-weight : bold;
+		}
+
+		.item .count {
+			font-size : 250%;
+			font-weight : bold;
+		}
+
+		.item .price {
+			font-size : 150%;
+			font-weight : bold;
+		}
+
+		.item .minus {
+			line-height : 1;
+			margin-top : 10px;
+			text-align : right;
+			
+		}
+		.item .minusm {
+			font-size : 25px;
+			font-weight : bold;
+			display : inline-block;
+			width : 1em;
+			line-height : 1;
+			text-align : center;
+			margin-right : -5px;
+			margin-bottom : -5px;
+		}
+		.item .minusm:hover {
+			background-color : red;
+			color : white;
+		}
+		
+		
+		.final, .charge-panel {
+			position : absolute;
+			top : 0;
+			left : 0;
+			right : 0;
+			bottom : 0;
+			background : rgba(0,0,0,0.85);
+			padding : 3em;
+			overflow : auto;
+		}
+		
+		.tbl {
+			color:white;
+			font-size : 250%;			
+		}
+		
+		.tbl .code {
+			display : inline-block;
+			float:left;
+		}
+
+		.tbl .label {
+			display : inline-block;
+			margin-right : 2em;
+		}
+
+		.tbl .amount {
+			display : inline-block;
+			width : 7em;
+		}
+		
+		.row {
+			text-align : right;
+		}
+		
+		.final .total {
+			text-align : right;
+			font-size : 140%;
+		}
+		
+		.final .total-num {
+			color : red;
+			display : inline-block;
+		}
+		
+		.final .total-lbl {
+			float : left;
+		}
+		
+		
+		.buttons {
+			margin-top : 2em;
+		}
+		
+		.buttons .cash, .buttons .qr {
+			display : inline-block;
+			font-size : 300%;
+			font-weight : bold;
+			margin-right : 10px;
+			padding : 0.5em;
+			border : 2px solid #A0A0A0;
+			color : #A0A0A0;
+			cursor : pointer;
+		}
+		
+		.buttons .active {
+			border : 2px solid black;
+			color : white;
+			background-color : red;
+		}
+
+		.buttons .confirm ,.buttons .confirm-charge,.buttons .balance {
+			clear : both;
+			display : block;
+			font-size : 300%;
+			font-weight : bold;
+			margin-top : 2em;
+			padding : 0.5em;
+			border : 2px solid #A0A0A0;
+			color : #A0A0A0;
+			text-align : center;
+			cursor : pointer;
+		}
+		
+		.buttons .confirm-charge {
+			margin-top : 10px;
+		}
+		
+		.buttons .close {
+			font-size : 25px;
+			font-weight : bold;
+			display : inline-block;
+			width : 1em;
+			line-height : 1;
+			text-align : center;
+			position : absolute;
+			right : 10px;
+			top : 10px;
+			color : red;
+			cursor : pointer;
+		}
+		
+		.buttons input {
+			font-size : 300%;
+			line-height : 1;
+			width : 7em;
+			text-align : right;
+			background-color:transparent;
+			border : 2px solid #a0a0a0;
+			color : #a0a0a0;
+			font-weight : bold;
+		}
+
+	</style>	
+	<script>
+var USERID="";
+	
+function formatNumber2(num) {
+	return num.toFixed(2);
+}
+var total = 0;
+var positions={};
+var invmap={}; 
+
+function fullUpdate() 
+{
+	total=0;
+	$(".item .count").html("&nbsp;");
+	$(".item").css("opacity","");
+	$(".minusm").css("opacity","0");
+	var arr=[];
+	for (var i in positions) 
+	{
+		var el = positions[i];
+		$(".item[data-code='"+i+"'] .count").html(el.count+"");
+		$(".item[data-code='"+i+"']").css("opacity","1");
+		$(".minusm[data-code='"+i+"']").css("opacity","1");
+		total+=el.total;
+		arr.push("<div class='row'>");
+		arr.push("<div class='code'>"+i+"</div>");
+		arr.push("<div class='label'>"+el.count+" x <b>"+formatNumber2(invmap[i].price)+"</b> BGN</div><div class='amount'><b>"+formatNumber2(el.total)+"</b> BGN</div>");
+		arr.push("</div>");
+	}
+	$(".total").html(formatNumber2(total)+" BGN");
+	if (total == 0)
+		$(".total").css("color","gray");
+	else
+		$(".total").css("color","red");
+	arr.push("<hr/>");
+	arr.push("<div class='total'><div class='total-lbl'>TOTAL</div> <b><div class='total-num'>"+formatNumber2(total)+"</div></b> BGN</div>");
+	$(".final .tbl").html(arr.join(""));
+}
+
+function pay() {
+	if (total == 0)
+		return;
+	$("body").css("overflow","hidden");
+	$(".confirm").css("color","");
+	$(".confirm").css("background-color","");
+	$(".final").show();
+	
+	$(".final .buttons input").hide();
+	$(".final .cash").addClass("active");
+	$(".final .qr").removeClass("active");
+
+	setTimeout(function() {
+		$('.final').scrollTop($('.final')[0].scrollHeight);
+	},0);
+}
+
+
+	
+$.ajaxSetup({ cache: false });
+$( document ).ready(function() 
+{
+	$.getJSON( "inventories", function( data ) {
+		var arr=[];
+		function add(code,amount) {
+			if (!positions[code])
+				positions[code]={code:code,count:0,total:0};
+			positions[code].count+=amount;
+			positions[code].total=positions[code].count * invmap[code].price;
+			if (positions[code].count <= 0)
+				delete positions[code];
+		}
+
+		for (var inv of data) 
+		{	
+			invmap[inv.code]=inv;
+			arr.push("<div data-code='"+inv.code+"' class='item' style='");
+			if (inv.color)
+				arr.push("color:"+inv.color+";");
+			if (inv.background)
+				arr.push("background-color:"+inv.background+";");
+			else
+				arr.push("background-color:#f0f0f0;");
+				
+			arr.push("'>");
+			arr.push("<div class='code'>"+inv.code+"</div>");
+			arr.push("<div class='count'>&nbsp;</div>");
+			arr.push("<div class='price'>"+inv.price+" BGN</div>");
+			arr.push("<div class='minus'><div class='minusm' data-code='"+inv.code+"'>X</div></div>");
+			arr.push("</div>");			
+			console.log(inv);
+		}
+		arr.push("<div class='total'></div>")
+		arr.push("<div class='submit'>ДАЙ!</div>")
+		arr.push("<div class='clear'>OXI?</div>")
+		arr.push("<div class='charge'>$++</div>")
+		$("#items").html(arr.join(""));
+		fullUpdate();
+		$(".item").mousedown(function(e) {
+			e.preventDefault();
+			e.stopPropagation();				
+			if (!this.lastClick || (new Date()).getTime()-this.lastClick >= 100) {
+				this.lastClick=(new Date()).getTime();
+				add($(this).data("code"),1);
+				fullUpdate();
+			}
+		});
+		$(".minusm").mousedown(function(e) {
+			e.preventDefault();
+			e.stopPropagation();				
+			if (!this.lastClick || (new Date()).getTime()-this.lastClick >= 100) {
+				this.lastClick=(new Date()).getTime();
+				add($(this).data("code"),-1);
+				fullUpdate();
+			}
+		});
+		$(".clear").click(function() {
+			positions={};
+			fullUpdate();
+		});
+		$(".submit").click(function() {
+			pay();
+		});
+		
+		$(".final .close").click(function() {
+			$("body").css("overflow","");
+			$(".final").hide();
+		});
+
+		$(".charge-panel .close").click(function() {
+			$("body").css("overflow","");
+			$(".charge-panel").hide();
+		});
+
+		$(".confirm").click(function() {
+			var col = "white";
+			if (!$(this)[0].style.color || !$(this)[0].style.color.length)
+			{
+				if ($(".final .cash").hasClass("active")) {
+					$(this).css("color",col);
+					$(this).css("background-color","rgba(128,255,128,0.5)");
+					return;
+				}
+				var code = $(".final input").val();
+				if (!code || !code.length) {
+					alert("Грешен код!");
+					return;
+				}
+				// CHECK FOR BALANCE FIRST
+				$.post( "charge", {user : USERID,customer:code,amount:0}).done(function(data) {
+					if (data.error) 
+						alert(data.error);
+					else {
+						var balance = data.totalCharged-data.totalSpent;
+						if (balance < total) {
+							alert("НАМА ПАРА! Налични "+formatNumber2(balance)+" BGN. Липсват "+formatNumber2(total-(data.totalCharged-data.totalSpent))+" BGN");
+							return;
+						}
+						$(".final .confirm").css("color",col);
+						$(".final .confirm").css("background-color","rgba(128,255,128,0.5)");
+					}
+				});
+			} else {
+				// TODO 
+				var code = $(".final input").val();
+				var customer=null;
+				if (code && code.length) 
+					customer=code;
+				var rr = [];
+				for (var i in positions) {
+					var e = positions[i];
+					rr.push({code : i,count : e.count,price : invmap[i].price,total : e.total});
+					console.warn(rr);
+				} 
+				$.post( "pay", {user : USERID,customer:customer, total:total,positions:rr}).done(function(data) {
+					if (data.error) {
+						alert(data.error);
+						$(".confirm-charge").css("color","");
+						$(".confirm-charge").css("background-color","");
+					}
+					else {
+						console.log(data);
+						if (data.balance)
+							alert("БАЛАНС "+data.balance+" BGN!");
+						$(".final").hide();
+						positions={};
+						fullUpdate();
+					}
+				});
+			}
+		});
+
+		$(".charge-panel .amount").change(function() {
+			var amount = parseFloat($(this).val());
+			if (isNaN(amount) || amount <= 0) {
+				amount=0;
+			}
+			$(this).val(formatNumber2(amount));
+		});
+		
+		$(".balance").click(function() {
+			var code = $(".charge-panel .code").val();
+			if (!code || !code.length) {
+				alert("Грешен код!");
+				return;
+			}
+			$.post( "charge", {user : USERID,customer:code,amount:0}).done(function(data) {
+				if (data.error) 
+					alert(data.error);
+				else {
+					alert("Balance "+(data.totalCharged-data.totalSpent)+"  |||  Volume "+data.totalCharged);
+				}
+			});
+		});
+		
+		$(".confirm-charge").click(function() {
+			var code = $(".charge-panel .code").val();
+			if (!code || !code.length) {
+				alert("Грешен код!");
+				return;
+			}
+			var amount = parseFloat($(".charge-panel .amount").val());
+			if (isNaN(amount) || amount <= 0) {
+				alert("Грешна сума!");
+				return;
+			}
+			var col = "white";
+			if (!$(this)[0].style.color || !$(this)[0].style.color.length)
+			{
+				$(this).css("color",col);
+				$(this).css("background-color","rgba(128,255,128,0.5)");
+			} else {
+				$.post( "charge", {user : USERID,customer:code,amount:amount}).done(function(data) {
+					if (data.error) 
+						alert(data.error);
+					else {
+						alert("Balance "+(data.totalCharged-data.totalSpent)+" | Volume "+data.totalCharged);
+						$(".charge-panel").hide();
+					}
+				});
+			}
+			// TODO 
+		});
+
+		$(".charge").click(function() {
+			$(".charge-panel").show();
+			$(".charge-panel .amount").val("0.00");
+			$(".charge-panel .code").val("");
+			$(".confirm-charge").css("color","");
+			$(".confirm-charge").css("background-color","");
+			$(".charge-panel .buttons input.code").focus();
+		});
+		
+		
+		$(".final .cash").click(function() {
+			if ($(".final .cash").hasClass("active"))
+				return;
+			$(".final .cash").addClass("active");
+			$(".final .qr").removeClass("active");
+			$(".final .buttons input").hide();
+			$(".final .confirm").css("color","");
+			$(".final .confirm").css("background-color","");			
+		});
+		$(".final .qr").click(function() {
+			if ($(".final .qr").hasClass("active"))
+				return;
+			$(".final .cash").removeClass("active");
+			$(".final .qr").addClass("active");
+			$(".final .buttons input").show();
+			$(".final .buttons input").val("");
+			$(".final .buttons input").focus();
+			$(".final .confirm").css("color","");
+			$(".final .confirm").css("background-color","");			
+		});
+		
+		$(".final .buttons input").change(function() {
+			$(".final .confirm").css("color","");
+			$(".final .confirm").css("background-color","");			
+		});
+	});
+
+	
+	//---------------------------------------------------------
+	if (!$('#login-form').hasClass('hidden')) 
+	{
+		var ologinval=null;
+		var intrv;
+		function tryLogin() {
+			var login = $('#login').val();
+			var pass = $('#password').val();
+			intrv=null;
+			$.post( "login", {login : login,password : pass}).done(function(data) {
+				if (data.id) {
+					USERID=data.id;
+					$("#login-form").hide();
+					localStorage.setItem("login",login);
+					localStorage.setItem("password",pass);
+					$("#header .login").html(login);
+				}
+			});
+		}
+		function chk() {
+			var key = $('#login').val()+" "+$('#password').val();
+			if (!ologinval || ologinval != key) {
+				ologinval=key;
+				if (intrv) 
+					clearTimeout(intrv);
+				intrv=setTimeout(tryLogin,1000);					
+			}
+		}
+		$('#login-form input').on('input',chk);
+		var ok = localStorage.getItem("login") && localStorage.getItem("password");
+		if (localStorage.getItem("login"))
+			$('#login').val(localStorage.getItem("login"));
+		if (localStorage.getItem("password"))
+			$('#password').val(localStorage.getItem("password"));
+		if (ok)
+			chk();
+		$("#header .login").click(function() {
+			localStorage.removeItem("password");
+			window.location.href=window.location.href;
+		});
+
+	}
+	
+	//----------------------------------------------------
+	var csel=null;
+	setInterval(function() {
+		if (!csel)
+			return;
+		$.post( "getqr", {user : USERID}).done(function(data) {
+			if (data.code) {
+				$(csel).val(data.code);
+				$(".final .code, .charge-panel .code").blur();
+				var snd = new Audio("data:audio/wav;base64,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qJrx4KOQjahZxWbcZgztj2c49nKmkId44S71j0c8eV9yDK6uPRzx5X18eDvjvQ6yKo9ZSS6l//8elePK/Lf//IInrOF/FvDoADYAGBMGb7FtErm5MXMlmPAJQVgWta7Zx2go+8xJ0UiCb8LHHdftWyLJE0QIAIsI+UbXu67dZMjmgDGCGl1H+vpF4NSDckSIkk7Vd+sxEhBQMRU8j/12UIRhzSaUdQ+rQU5kGeFxm+hb1oh6pWWmv3uvmReDl0UnvtapVaIzo1jZbf/pD6ElLqSX+rUmOQNpJFa/r+sa4e/pBlAABoAAAAA3CUgShLdGIxsY7AUABPRrgCABdDuQ5GC7DqPQCgbbJUAoRSUj+NIEig0YfyWUho1VBBBA//uQZB4ABZx5zfMakeAAAAmwAAAAF5F3P0w9GtAAACfAAAAAwLhMDmAYWMgVEG1U0FIGCBgXBXAtfMH10000EEEEEECUBYln03TTTdNBDZopopYvrTTdNa325mImNg3TTPV9q3pmY0xoO6bv3r00y+IDGid/9aaaZTGMuj9mpu9Mpio1dXrr5HERTZSmqU36A3CumzN/9Robv/Xx4v9ijkSRSNLQhAWumap82WRSBUqXStV/YcS+XVLnSS+WLDroqArFkMEsAS+eWmrUzrO0oEmE40RlMZ5+ODIkAyKAGUwZ3mVKmcamcJnMW26MRPgUw6j+LkhyHGVGYjSUUKNpuJUQoOIAyDvEyG8S5yfK6dhZc0Tx1KI/gviKL6qvvFs1+bWtaz58uUNnryq6kt5RzOCkPWlVqVX2a/EEBUdU1KrXLf40GoiiFXK///qpoiDXrOgqDR38JB0bw7SoL+ZB9o1RCkQjQ2CBYZKd/+VJxZRRZlqSkKiws0WFxUyCwsKiMy7hUVFhIaCrNQsKkTIsLivwKKigsj8XYlwt/WKi2N4d//uQRCSAAjURNIHpMZBGYiaQPSYyAAABLAAAAAAAACWAAAAApUF/Mg+0aohSIRobBAsMlO//Kk4soosy1JSFRYWaLC4qZBYWFRGZdwqKiwkNBVmoWFSJkWFxX4FFRQWR+LsS4W/rFRb/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////VEFHAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAU291bmRib3kuZGUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMjAwNGh0dHA6Ly93d3cuc291bmRib3kuZGUAAAAAAAAAACU=");  
+				snd.play();
+			}
+		});
+	},700);
+	$(".final .code, .charge-panel .code").focus(function() {
+		csel=$(this);
+		$.post( "setupqr", {user : USERID}).done(function(data) {});
+		
+	});
+	$(".final .code, .charge-panel .code").blur(function() {
+		csel=null;
+		$.post( "doneqr", {user : USERID}).done(function(data) {});
+	});
+});
+	</script>
+</head>
+<body>
+<div id="header">
+	<div class="login"></div>
+</div>
+<div id='items'>
+</div>
+<div class='final' style='display:none'>
+	<div class='tbl'>
+	</div>
+<div class='buttons'>
+<div class='cash active'>₭€Ш</div>
+<div class='qr'>CODE</div>
+<input type="text" class='code' value='' maxlength='10' />
+<div class='confirm'>ПЛАТИ</div>
+<div class='close'>X</div>
+</div>
+</div>
+<div class='charge-panel' style='display:none'>
+<div class='buttons'>
+<div class='qr'>CODE</div>
+<input type="text" class='code' value='' maxlength='10' />
+<div class='balance'>БАЛАНС</div>
+<div class='confirm-charge'>ЗАХРАНИ</div>
+<input type="number" class='amount' value='0.00'/>
+<div class='close'>X</div>
+</div>
+</div>
+
+<div id='login-form'>
+<input type="text" id='login' placeholder='Login'/></input>
+<input type="text" id='password' placeholder='Password'/></input>
+</div>
+</body>
+</html>
+

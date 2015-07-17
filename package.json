@@ -1,0 +1,40 @@
+{
+  "name": "cachless",
+  "version": "1.0.0",
+  "main": "index.js",
+  "directories": {
+    "doc": "doc"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node src/server.js",
+    "reset" : "node src/reset.js",
+    "images" : "node src/images.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tran4o/cachless.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/tran4o/cachless/issues"
+  },
+  "homepage": "https://github.com/tran4o/cachless#readme",
+  "dependencies": {
+    "compression" : "^1.5.1",
+    "express": "^4.13.0",
+    "browserify": "^10.2.4",
+	"moment" : "^2.10.3",
+	"body-parser" : "^1.13.2",
+	"request-json" : "^0.5.3",
+	"binary-search-tree" : "^0.2.4",
+	"request" : "^2.58.0",
+	"orientjs" : "^2.0.0",
+	"qrcode" : "^0.2.12",
+	"barcode-generator" : "^0.1.0"  
+  },
+  "devDependencies": {
+  },
+  "description": ""
+}

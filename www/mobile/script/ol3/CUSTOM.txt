@@ -1,0 +1,30 @@
+Openlayers 3.0-beta-4+ patches
+--------------------------------
+
+1. DOM renderer layer visibility (dommaprenderer.js)
+
+	IN FUNCTION
+		renderer.dom.Map.prototype.renderFrame 
+	AFTER
+		 goog.asserts.assertInstanceof(layerRenderer, ol.renderer.dom.Layer);
+ 
+	CODE
+	    if (!layerState.visible) {
+	    	if (layerRenderer.getTarget().parentNode == this.layersPane_)
+	    		this.layersPane_.removeChild(layerRenderer.getTarget());
+	    	continue;
+	    }
+
+2. src\ol\Map.js
+	    
+ol.Map.prototype.getEventPixel = function(event) {
+  if(goog.isDef(event.changedTouches)) {
+    var touch = event.changedTouches.item ? event.changedTouches.item(0) : event.changedTouches[0];
+    var viewportPosition = goog.style.getClientPosition(this.viewport_);
+    return[touch.clientX - viewportPosition.x, touch.clientY - viewportPosition.y]
+  }else {
+    var eventPosition = goog.style.getRelativePosition(event, this.viewport_);
+    return[eventPosition.x, eventPosition.y]
+  }
+}; 
+	    
