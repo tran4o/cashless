@@ -184,6 +184,9 @@ app.post("/pay",function(req,resp) {
 	var user = db.record.get(req.body.user);
 	if (user == null)
 		return resp.send(JSON.stringify({'error':'access denied'},null,4));
+	var discount = parseFloat(req.body.discount);
+	if (isNaN(discount) || discount < 0)
+		discount=0;
 	var positions = req.body.positions;
 	var total = parseFloat(req.body.total);
 	var cstr = req.body.customer;
@@ -245,7 +248,8 @@ app.post("/pay",function(req,resp) {
 							positions : poss,
 							total : total,
 							user : user["@rid"],
-							customer : customer ? customer["@rid"] : null
+							customer : customer ? customer["@rid"] : null,
+							discount : discount
 						}).then(function(ord) {
 							resp.header("Content-Type", "application/json; charset=utf-8");
 							resp.send(JSON.stringify({balance:balance},null,4));

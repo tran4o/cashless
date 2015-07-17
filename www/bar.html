@@ -489,7 +489,7 @@ $( document ).ready(function()
 					var e = positions[i];
 					rr.push({code : i,count : e.count,price : invmap[i].price,total : e.total});
 				} 
-				$.post( "pay", {user : USERID,customer:customer, total:total*(1.0-DISCOUNT/100.0),positions:rr}).done(function(data) {
+				$.post( "pay", {user : USERID,customer:customer, total:total*(1.0-DISCOUNT/100.0),discount : total*DISCOUNT/100.0 ,positions:rr}).done(function(data) {
 					if (data.error) {
 						alert(data.error);
 						$(".confirm-charge").css("color","");
