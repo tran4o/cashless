@@ -121,6 +121,24 @@ app.post("/doneqr",function(req,resp) {
 });
 
 
+app.post("/discount",function(req,resp) {
+	resp.header("Content-Type", "application/json; charset=utf-8");
+	var user = db.record.get(req.body.user);
+	if (user == null)
+		return resp.send(JSON.stringify({'error':'access denied'},null,4));
+	var cstr = req.body.customer;
+	db.select().from('Customer').where({code: cstr}).all().then(function (customers) 
+	{
+		if (customers && customers.length == 1) 
+		{
+			customer=customers[0];
+			resp.send(JSON.stringify({'discount':customer.discount}, null, 4));
+		} else {
+			resp.send(JSON.stringify({'error':'can not find customer '+cstr}, null, 4));
+		}
+	});
+});
+
 app.post("/charge",function(req,resp) {
 	resp.header("Content-Type", "application/json; charset=utf-8");
 	var user = db.record.get(req.body.user);

@@ -219,6 +219,11 @@
 			text-align : right;
 		}
 		
+		.discount {
+			color:white;
+			font-size : 250%;			
+		}
+		
 		.final .total {
 			text-align : right;
 			font-size : 140%;
@@ -228,12 +233,21 @@
 			color : red;
 			display : inline-block;
 		}
-		
-		.final .total-lbl {
-			float : left;
+
+		.final .discount {
+			text-align : right;
+			font-size : 140%;
 		}
 		
+		.final .discount-num {
+			color : green;
+			display : inline-block;
+		}
 		
+		.final .total-lbl,.final .discount-lbl {
+			float : left;
+		}
+			
 		.buttons {
 			margin-top : 2em;
 		}
@@ -300,7 +314,8 @@
 	</style>	
 	<script>
 var USERID="";
-	
+var DISCOUNT=0;
+
 function formatNumber2(num) {
 	return num.toFixed(2);
 }
@@ -333,7 +348,8 @@ function fullUpdate()
 	else
 		$(".total").css("color","red");
 	arr.push("<hr/>");
-	arr.push("<div class='total'><div class='total-lbl'>TOTAL</div> <b><div class='total-num'>"+formatNumber2(total)+"</div></b> BGN</div>");
+	arr.push("<div class='discount'><div class='discount-lbl'>ОТСТ. 0.00%</div><b><div class='discount-num'>-"+formatNumber2(total*DISCOUNT/100.0)+"</div></b>&nbsp;BGN</div>");
+	arr.push("<div class='total'><div class='total-lbl'>TOTAL</div> <b><div class='total-num'>"+formatNumber2(total*(1.0-DISCOUNT/100.0))+"</div></b> BGN</div>");
 	$(".final .tbl").html(arr.join(""));
 }
 
@@ -343,8 +359,8 @@ function pay() {
 	$("body").css("overflow","hidden");
 	$(".confirm").css("color","");
 	$(".confirm").css("background-color","");
-	$(".final").show();
-	
+	$(".final").show();	
+	$(".discount-num").val("-0.00");
 	$(".final .buttons input").hide();
 	$(".final .cash").addClass("active");
 	$(".final .qr").removeClass("active");
@@ -387,7 +403,6 @@ $( document ).ready(function()
 			arr.push("<div class='price'>"+inv.price+" BGN</div>");
 			arr.push("<div class='minus'><div class='minusm' data-code='"+inv.code+"'>X</div></div>");
 			arr.push("</div>");			
-			console.log(inv);
 		}
 		arr.push("<div class='total'></div>")
 		arr.push("<div class='submit'>ДАЙ!</div>")
@@ -424,6 +439,10 @@ $( document ).ready(function()
 		$(".final .close").click(function() {
 			$("body").css("overflow","");
 			$(".final").hide();
+			if (DISCOUNT != 0) {
+				DISCOUNT=0;
+				fullUpdate();
+			}
 		});
 
 		$(".charge-panel .close").click(function() {
@@ -451,8 +470,8 @@ $( document ).ready(function()
 						alert(data.error);
 					else {
 						var balance = data.totalCharged-data.totalSpent;
-						if (balance < total) {
-							alert("НАМА ПАРА! Налични "+formatNumber2(balance)+" BGN. Липсват "+formatNumber2(total-(data.totalCharged-data.totalSpent))+" BGN");
+						if (balance < total*(1.0-DISCOUNT/100.0)) {
+							alert("НАМА ПАРА! Налични "+formatNumber2(balance)+" BGN. Липсват "+formatNumber2(total*(1.0-DISCOUNT/100.0)-(data.totalCharged-data.totalSpent))+" BGN");
 							return;
 						}
 						$(".final .confirm").css("color",col);
@@ -469,19 +488,23 @@ $( document ).ready(function()
 				for (var i in positions) {
 					var e = positions[i];
 					rr.push({code : i,count : e.count,price : invmap[i].price,total : e.total});
-					console.warn(rr);
 				} 
-				$.post( "pay", {user : USERID,customer:customer, total:total,positions:rr}).done(function(data) {
+				$.post( "pay", {user : USERID,customer:customer, total:total*(1.0-DISCOUNT/100.0),positions:rr}).done(function(data) {
 					if (data.error) {
 						alert(data.error);
 						$(".confirm-charge").css("color","");
 						$(".confirm-charge").css("background-color","");
 					}
 					else {
-						console.log(data);
 						if (data.balance)
 							alert("БАЛАНС "+data.balance+" BGN!");
 						$(".final").hide();
+						if (DISCOUNT != 0) {
+							DISCOUNT=0;
+							fullUpdate();
+						}
+						if (DISCOUNT != 0)
+							DISCOUNT=0;
 						positions={};
 						fullUpdate();
 					}
@@ -554,6 +577,11 @@ $( document ).ready(function()
 		$(".final .cash").click(function() {
 			if ($(".final .cash").hasClass("active"))
 				return;
+			if (DISCOUNT != 0) {
+				DISCOUNT=0;
+				updateDiscount();
+			}
+			$(".discount-num").val("-0.00");
 			$(".final .cash").addClass("active");
 			$(".final .qr").removeClass("active");
 			$(".final .buttons input").hide();
@@ -563,6 +591,11 @@ $( document ).ready(function()
 		$(".final .qr").click(function() {
 			if ($(".final .qr").hasClass("active"))
 				return;
+			if (DISCOUNT != 0) {
+				DISCOUNT=0;
+				updateDiscount();
+			}
+			$(".discount-num").val("-0.00");
 			$(".final .cash").removeClass("active");
 			$(".final .qr").addClass("active");
 			$(".final .buttons input").show();
@@ -623,19 +656,40 @@ $( document ).ready(function()
 	}
 	
 	//----------------------------------------------------
+	function updateDiscount(code,notbl) 
+	{		
+		$.post( "discount", {user : USERID,customer : code}).done(function(data) {
+			if (data.discount) 
+				DISCOUNT=parseFloat(data.discount);
+			else
+				DISCOUNT=0;
+			$(".discount-num").html("-"+formatNumber2(total*DISCOUNT/100.0));
+			$(".discount-lbl").html("ОТСТ. "+formatNumber2(DISCOUNT)+"%");
+			if (!notbl)
+				fullUpdate();
+		});
+	}
+	//----------------------------------------------------
 	var csel=null;
-	setInterval(function() {
+	setInterval(function() 
+	{
 		if (!csel)
 			return;
 		$.post( "getqr", {user : USERID}).done(function(data) {
-			if (data.code) {
+			if (data.code) 
+			{
 				$(csel).val(data.code);
+				$(csel).hasClass("updd")
+					updateDiscount(data.code);					
 				$(".final .code, .charge-panel .code").blur();
 				var snd = new Audio("data:audio/wav;base64,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qJrx4KOQjahZxWbcZgztj2c49nKmkId44S71j0c8eV9yDK6uPRzx5X18eDvjvQ6yKo9ZSS6l//8elePK/Lf//IInrOF/FvDoADYAGBMGb7FtErm5MXMlmPAJQVgWta7Zx2go+8xJ0UiCb8LHHdftWyLJE0QIAIsI+UbXu67dZMjmgDGCGl1H+vpF4NSDckSIkk7Vd+sxEhBQMRU8j/12UIRhzSaUdQ+rQU5kGeFxm+hb1oh6pWWmv3uvmReDl0UnvtapVaIzo1jZbf/pD6ElLqSX+rUmOQNpJFa/r+sa4e/pBlAABoAAAAA3CUgShLdGIxsY7AUABPRrgCABdDuQ5GC7DqPQCgbbJUAoRSUj+NIEig0YfyWUho1VBBBA//uQZB4ABZx5zfMakeAAAAmwAAAAF5F3P0w9GtAAACfAAAAAwLhMDmAYWMgVEG1U0FIGCBgXBXAtfMH10000EEEEEECUBYln03TTTdNBDZopopYvrTTdNa325mImNg3TTPV9q3pmY0xoO6bv3r00y+IDGid/9aaaZTGMuj9mpu9Mpio1dXrr5HERTZSmqU36A3CumzN/9Robv/Xx4v9ijkSRSNLQhAWumap82WRSBUqXStV/YcS+XVLnSS+WLDroqArFkMEsAS+eWmrUzrO0oEmE40RlMZ5+ODIkAyKAGUwZ3mVKmcamcJnMW26MRPgUw6j+LkhyHGVGYjSUUKNpuJUQoOIAyDvEyG8S5yfK6dhZc0Tx1KI/gviKL6qvvFs1+bWtaz58uUNnryq6kt5RzOCkPWlVqVX2a/EEBUdU1KrXLf40GoiiFXK///qpoiDXrOgqDR38JB0bw7SoL+ZB9o1RCkQjQ2CBYZKd/+VJxZRRZlqSkKiws0WFxUyCwsKiMy7hUVFhIaCrNQsKkTIsLivwKKigsj8XYlwt/WKi2N4d//uQRCSAAjURNIHpMZBGYiaQPSYyAAABLAAAAAAAACWAAAAApUF/Mg+0aohSIRobBAsMlO//Kk4soosy1JSFRYWaLC4qZBYWFRGZdwqKiwkNBVmoWFSJkWFxX4FFRQWR+LsS4W/rFRb/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////VEFHAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAU291bmRib3kuZGUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMjAwNGh0dHA6Ly93d3cuc291bmRib3kuZGUAAAAAAAAAACU=");  
 				snd.play();
 			}
 		});
 	},700);
+	$(".final .code").change( function() {
+		updateDiscount($(".final input.code").val());
+	});
 	$(".final .code, .charge-panel .code").focus(function() {
 		csel=$(this);
 		$.post( "setupqr", {user : USERID}).done(function(data) {});
@@ -657,10 +711,11 @@ $( document ).ready(function()
 <div class='final' style='display:none'>
 	<div class='tbl'>
 	</div>
+		
 <div class='buttons'>
 <div class='cash active'>₭€Ш</div>
 <div class='qr'>CODE</div>
-<input type="text" class='code' value='' maxlength='10' />
+<input type="text" class='code updd' value='' maxlength='10' />
 <div class='confirm'>ПЛАТИ</div>
 <div class='close'>X</div>
 </div>
