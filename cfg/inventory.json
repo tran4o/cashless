@@ -1,43 +1,114 @@
 [
 	{
-		"code" : "BEER",
-		"price" : 2.50,
-		"background" : "green",
-		"color" : "black"
+		"code" : "PRAMEN",
+		"price" : 3
 	}, 	
 	{
-		"code" : "WATER",
-		"price" : 1.50,
-		"background" : "blue",
-		"color" : "white"
+		"code" : "BARNO",
+		"price" : 3
 	}, 	
 	{
-		"code" : "SOFT",
-		"price" : 2,
-		"background" : "#80A0C0"
+		"code" : "ZAGORK",
+		"price" : 3
 	}, 	
 	{
-		"code" : "HRD50",
+		"code" : "KEN",
+		"price" : 3
+	}, 	
+	{
+		"code" : "COLA",
+		"price" : 2
+	}, 	
+	{
+		"code" : "FANTA",
+		"price" : 2
+	}, 	
+	{
+		"code" : "SRITE",
+		"price" : 2
+	}, 	
+	{
+		"code" : "TONIK",
+		"price" : 2
+	}, 	
+	{
+		"code" : "DEV500",
+		"price" : 1
+	}, 	
+	{
+		"code" : "DEV1500",
+		"price" : 2
+	}, 	
+	{
+		"code" : "REDBUL",
+		"price" : 5
+	}, 	
+	{
+		"code" : "APPLE",
+		"price" : 2
+	}, 	
+	{
+		"code" : "TOMAT",
+		"price" : 2
+	}, 	
+	{
+		"code" : "GRPFRT",
+		"price" : 2
+	}, 	
+	{
+		"code" : "KASIS",
+		"price" : 2
+	}, 	
+	{
+		"code" : "ORANGE",
+		"price" : 2
+	}, 	
+	{
+		"code" : "VODKRUSS",
 		"price" : 4
 	}, 	
 	{
-		"code" : "HRD100",
-		"price" : 8
+		"code" : "VODKPOLS",
+		"price" : 3
 	}, 	
 	{
-		"code" : "CKTL1",
-		"price" : 10
+		"code" : "JIMBEAM",
+		"price" : 5
 	}, 	
 	{
-		"code" : "CKTL2",
-		"price" : 8
-	}, 	
-	{
-		"code" : "MIX1",
+		"code" : "JACK",
 		"price" : 6
 	}, 	
 	{
-		"code" : "MIX2",
-		"price" : 7
+		"code" : "BUSH",
+		"price" : 5
+	}, 	
+	{
+		"code" : "MORGSPC",
+		"price" : 4
+	}, 	
+	{
+		"code" : "MORGJAMA",
+		"price" : 4
+	}, 	
+	{
+		"code" : "JAGER",
+		"price" : 3
+	}, 	
+	{
+		"code" : "JINBIF",
+		"price" : 4
+	}, 	
+	{
+		"code" : "JINSAV",
+		"price" : 2
+	}, 	
+	{
+		"code" : "MASTIK",
+		"price" : 3
+	}, 	
+	{
+		"code" : "MENTA",
+		"price" : 2
 	} 	
 ]
