@@ -12,6 +12,7 @@ input.style.padding="0.5em";
 document.body.appendChild(input); // put it into the DOM
 if (localStorage.getItem("LOGIN")) {
 	input.value=localStorage.getItem("LOGIN");
+	LOGIN=input.value
 }
 input.onchange=function() {
 	val = input.value;
@@ -55,12 +56,11 @@ function tick()
 				if (xhr.responseText && xhr.responseText.indexOf("OK") >= 0)
 					doWork();
 			}
-			setTimeout(tick,800);
 		} 
 	};
 	areq.send();
 }
-setTimeout(tick,800);
+setInterval(tick,800);
 
 
 

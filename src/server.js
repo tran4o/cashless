@@ -45,7 +45,7 @@ app.get("/isqr",function(req,resp) {
 	db.select().from('User').where({code: cstr}).all().then(function (users) 
 	{
 		if (users && users.length == 1) {
-			var user = users[0];			
+			var user = users[0];
 			if (qrdata[user.code] && !qrdata[user.code].done) {
 				qrdata[user.code].done=true;
 				resp.send(JSON.stringify({OK:"OK"},null,4));
@@ -62,7 +62,10 @@ app.get("/isqr",function(req,resp) {
 
 app.get("/readqr",function(req,resp) {
 	var cstr = req.query.user;
-	var qrcode = req.query.code;		
+	var qrcode = req.query.code;
+
+	console.log("ACCEPT : "+cstr+" | "+qrcode);
+
 	resp.header("Content-Type", "application/json; charset=utf-8");
 	db.select().from('User').where({code: cstr}).all().then(function (users) 
 	{
@@ -104,7 +107,6 @@ app.post("/setupqr",function(req,resp) {
 		qrdata[user.code]={};
 		delete qrdata[user.code].done;
 		resp.send(JSON.stringify({},null,4));
-		console.log("ADD");
 	});	
 });
 
