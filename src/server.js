@@ -7,7 +7,7 @@ var inventory = require('./inventory');
 
 //var qrcode = require('qrcode');
 //var Barc = require('barcode-generator')
-var barc = new Barc();
+//var barc = new Barc();
 var qrcode=null;
 var Barc=null;
 var barc=null;
