@@ -7,6 +7,15 @@
 	<script src="js/jquery-2.1.3.min.js"></script>
 	<script src="js/jquery.blockUI.js"></script>
 	<style>
+	
+		#loginbutton {
+			margin-top : 2em;
+			font-size : 30px;
+			padding : 0.5em;
+			border : 2px solid green;
+			color : green;
+			text-align : center;			
+		}
 
 		.charge-panel .amount {
 			display : inline-block;
@@ -385,9 +394,9 @@ $( document ).ready(function()
 			if (positions[code].count <= 0)
 				delete positions[code];
 		}
-
-		for (var inv of data) 
+		for (var ind in data)
 		{	
+			var inv = data[ind];
 			invmap[inv.code]=inv;
 			arr.push("<div data-code='"+inv.code+"' class='item' style='");
 			if (inv.color)
@@ -612,45 +621,36 @@ $( document ).ready(function()
 	});
 
 	
+	function tryLogin() {
+		var login = $('#login').val();
+		var pass = $('#password').val();
+		alert("TRY LOGIN : "+login+" | "+pass);
+		$.post( "login", {login : login,password : pass}).done(function(data) {
+			if (data.id) {
+				USERID=data.id;
+				$("#login-form").hide();
+				localStorage.setItem("login",login);
+				localStorage.setItem("password",pass);
+				$("#header .login").html(login);
+			}
+		});
+	}
 	//---------------------------------------------------------
 	if (!$('#login-form').hasClass('hidden')) 
 	{
-		var ologinval=null;
-		var intrv;
-		function tryLogin() {
-			var login = $('#login').val();
-			var pass = $('#password').val();
-			intrv=null;
-			$.post( "login", {login : login,password : pass}).done(function(data) {
-				if (data.id) {
-					USERID=data.id;
-					$("#login-form").hide();
-					localStorage.setItem("login",login);
-					localStorage.setItem("password",pass);
-					$("#header .login").html(login);
-				}
-			});
-		}
-		function chk() {
-			var key = $('#login').val()+" "+$('#password').val();
-			if (!ologinval || ologinval != key) {
-				ologinval=key;
-				if (intrv) 
-					clearTimeout(intrv);
-				intrv=setTimeout(tryLogin,1000);					
-			}
-		}
-		$('#login-form input').on('input',chk);
 		var ok = localStorage.getItem("login") && localStorage.getItem("password");
 		if (localStorage.getItem("login"))
 			$('#login').val(localStorage.getItem("login"));
 		if (localStorage.getItem("password"))
 			$('#password').val(localStorage.getItem("password"));
 		if (ok)
-			chk();
+			tryLogin();
 		$("#header .login").click(function() {
 			localStorage.removeItem("password");
 			window.location.href=window.location.href;
+		});
+		$("#loginbutton").click(function() {
+			tryLogin();
 		});
 
 	}
@@ -734,6 +734,7 @@ $( document ).ready(function()
 <div id='login-form'>
 <input type="text" id='login' placeholder='Login'/></input>
 <input type="text" id='password' placeholder='Password'/></input>
+<div id='loginbutton'>LOGIN</div>
 </div>
 </body>
 </html>
