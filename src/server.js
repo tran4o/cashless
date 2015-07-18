@@ -47,6 +47,7 @@ app.get("/isqr",function(req,resp) {
 		if (users && users.length == 1) {
 			var user = users[0];
 			if (qrdata[user.code] && !qrdata[user.code].done) {
+				console.log("RETURN OK FOF USER "+user.code);
 				qrdata[user.code].done=true;
 				resp.send(JSON.stringify({OK:"OK"},null,4));
 			} else {
@@ -67,7 +68,7 @@ app.get("/readqr",function(req,resp) {
 	db.select().from('User').where({code: cstr}).all().then(function (users) 
 	{
 		if (users && users.length == 1) {
-			var user = users[0];			
+			var user = users[0];
 			if (qrdata[user.code])
 				qrdata[user.code].qrcode=qrcode;
 			resp.send(JSON.stringify({},null,4));
@@ -90,7 +91,7 @@ app.post("/getqr",function(req,resp) {
 			return;
 		} 
 		resp.send(JSON.stringify({code:qrdata[user.code].qrcode},null,4));
-		delete qrdata[user.code].qrcode;
+		delete qrdata[user.code]
 	});	
 });
 
@@ -104,6 +105,7 @@ app.post("/setupqr",function(req,resp) {
 		qrdata[user.code]={};
 		delete qrdata[user.code].done;
 		resp.send(JSON.stringify({},null,4));
+		console.log("SETUP QR FOR USER : "+user.code);
 	});	
 });
 
@@ -115,6 +117,7 @@ app.post("/doneqr",function(req,resp) {
 			return;
 		}
 		delete qrdata[user.code];
+		console.log("DONE QR FOR USER : "+user.code);
 		resp.send(JSON.stringify({},null,4));
 	});	
 });

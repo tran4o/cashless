@@ -364,7 +364,7 @@ function pay() {
 	$(".final .buttons input").hide();
 	$(".final .cash").addClass("active");
 	$(".final .qr").removeClass("active");
-
+	$(".final input").val("");
 	setTimeout(function() {
 		$('.final').scrollTop($('.final')[0].scrollHeight);
 	},0);
