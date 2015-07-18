@@ -12,9 +12,11 @@
 			margin-top : 2em;
 			font-size : 30px;
 			padding : 0.5em;
-			border : 2px solid green;
-			color : green;
-			text-align : center;			
+			border : 2px solid #00FF00;
+			background-color: rgba(0,255,0,0.2);
+			color : white;
+			text-align : center;
+						
 		}
 
 		.charge-panel .amount {
@@ -624,7 +626,6 @@ $( document ).ready(function()
 	function tryLogin() {
 		var login = $('#login').val();
 		var pass = $('#password').val();
-		alert("TRY LOGIN : "+login+" | "+pass);
 		$.post( "login", {login : login,password : pass}).done(function(data) {
 			if (data.id) {
 				USERID=data.id;
